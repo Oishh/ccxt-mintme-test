@@ -1,0 +1,25 @@
+{
+  "name": "ccxt-project",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "TypeScript project to run the ccxt library",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "ccxt": "^4.0.0",
+    "ololog": "^1.1.175"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0"
+  }
+}
