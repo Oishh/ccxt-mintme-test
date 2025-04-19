@@ -6,6 +6,7 @@ A TypeScript project that integrates the MintMe exchange with the CCXT library. 
 
 - Custom CCXT exchange implementation for MintMe
 - Fetch asset information from MintMe exchange
+- Create buy and sell orders on MintMe exchange
 - Display market data in a formatted table
 - TypeScript support for type safety
 
@@ -25,18 +26,58 @@ cd ccxt-mintme-test
 npm install
 ```
 
+## Environment Setup
+
+Create a `.env` file in the root directory with your MintMe API credentials:
+
+```
+PUB_API_KEY=your_public_api_key
+PRIV_API_KEY=your_private_api_key
+```
+
 ## Project Structure
 
 - `src/mintme-extension.ts` - Contains the MintMe exchange implementation extending CCXT
-- `src/testMintMe.ts` - Example script demonstrating how to use the MintMe integration
+- `src/testMintMe.ts` - Example script demonstrating how to use the MintMe integration to fetch assets
+- `src/testMintMeOrder.ts` - Example script for creating orders on MintMe exchange
 
 ## Usage
 
-Run the test script to see the integration in action:
+### Fetch Asset Information
+
+Run the test script to see the asset information:
 
 ```bash
 ts-node src/testMintMe.ts
 ```
+
+### Create Orders
+
+Create orders on MintMe using command line arguments:
+
+```bash
+# Basic limit order
+ts-node src/testMintMeOrder.ts --base=LAGX --quote=MINTME --price=5 --amount=12.33 --action=buy
+
+# Market order
+ts-node src/testMintMeOrder.ts --base=LAGX --quote=MINTME --amount=12.33 --action=buy --market
+
+# Sell order
+ts-node src/testMintMeOrder.ts --base=LAGX --quote=MINTME --price=5 --amount=12.33 --action=sell
+```
+
+#### Available Order Parameters
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `--base` | Base asset symbol | `--base=LAGX` |
+| `--quote` | Quote asset symbol | `--quote=MINTME` |
+| `--price` | Price per unit (not needed for market orders) | `--price=5` |
+| `--amount` | Amount to buy/sell | `--amount=12.33` |
+| `--action` | Order type (buy/sell) | `--action=buy` |
+| `--donation` | Optional donation amount | `--donation=0.1` |
+| `--market` | Flag to use market price | `--market` |
+| `--help` | Show help message | `--help` |
 
 ## Available Markets
 

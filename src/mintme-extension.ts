@@ -6,12 +6,23 @@ declare module 'ccxt' {
     export const mintme: typeof MintMeExchange;
 }
 
-// Define interfaces for API responses
-interface MintMeMarket {
-    id: string;
-    symbol: string;
+interface MintMeOrder {
     base: string;
     quote: string;
+    priceInput: string;
+    amountInput: string;
+    donationAmount: string;
+    marketPrice: boolean;
+    action: string;
+}
+
+interface MintMeParams {
+    donationAmount?: string;
+    priceInput?: string;
+    amountInput?: string;
+    marketPrice?: boolean;
+    action?: string;
+    [key: string]: any;
 }
 
 // Extend the CCXT base Exchange class to create a custom MintMe exchange implementation
@@ -34,24 +45,6 @@ class MintMeExchange extends ccxt.Exchange {
         'doc': ['https://mintme.com/docs/api'], // Changed to array to match base type
     };
     
-    // Define API methods and their endpoints
-    api = {
-        'public': {
-            'get': [
-                'open/assets', // Get all assets
-            ],
-        },
-        'private': {
-            'post': [
-                'balances', // Get account balances
-                'orders', // Get open orders
-                'orders/{pair}', // Place order
-                'order/{id}', // Get order info
-                'cancel/{id}', // Cancel order
-            ],
-        },
-    };
-    
     // Define available markets/pairs (to be populated during loadMarkets)
     markets: Record<string, ccxt.Market> = {};
     
@@ -62,216 +55,6 @@ class MintMeExchange extends ccxt.Exchange {
             'rateLimit': 1000, // 1 request per second
             ...config,
         });
-    }
-    
-    // Method to load markets/pairs available on the exchange
-    async loadMarkets(reload?: boolean, params = {}): Promise<ccxt.Dictionary<ccxt.Market>> {
-        // In a real implementation, you would fetch the markets from the API
-        // For this example, we'll define some common pairs manually
-        const defaultMarketProps = {
-            'active': true,
-            'spot': true,
-            'margin': false,
-            'swap': false,
-            'future': false,
-            'option': false,
-            'contract': false,
-            'linear': false,
-            'inverse': false,
-            'taker': 0.002,
-            'maker': 0.002,
-            'contractSize': 1,
-            'expiry': undefined,
-            'expiryDatetime': undefined,
-            'strike': undefined,
-            'optionType': undefined,
-            'tierBased': false,
-            'percentage': true,
-            'feeSide': 'get' as const,
-            'settle': undefined,
-            'settleId': undefined,
-            'created': Date.now(),
-        };
-
-        const markets: ccxt.Dictionary<ccxt.Market> = {
-            'BTC/WETH': { 
-                'id': 'btc-weth', 
-                'symbol': 'BTC/WETH', 
-                'base': 'BTC', 
-                'quote': 'WETH',
-                'baseId': 'btc',
-                'quoteId': 'weth',
-                'type': 'spot',
-                'precision': {
-                    'amount': 8,
-                    'price': 8
-                },
-                'limits': {
-                    'amount': {
-                        'min': 0.0001,
-                        'max': undefined
-                    },
-                    'price': {
-                        'min': 0.00000001,
-                        'max': undefined
-                    },
-                    'cost': {
-                        'min': 0.0001,
-                        'max': undefined
-                    }
-                },
-                'info': {},
-                ...defaultMarketProps
-            },
-            'ETH/WETH': { 
-                'id': 'eth-weth', 
-                'symbol': 'ETH/WETH', 
-                'base': 'ETH', 
-                'quote': 'WETH',
-                'baseId': 'eth',
-                'quoteId': 'weth',
-                'type': 'spot',
-                'precision': {
-                    'amount': 8,
-                    'price': 8
-                },
-                'limits': {
-                    'amount': {
-                        'min': 0.0001,
-                        'max': undefined
-                    },
-                    'price': {
-                        'min': 0.00000001,
-                        'max': undefined
-                    },
-                    'cost': {
-                        'min': 0.0001,
-                        'max': undefined
-                    }
-                },
-                'info': {},
-                ...defaultMarketProps
-            },
-            'MINTME/BTC': { 
-                'id': 'mintme-btc', 
-                'symbol': 'MINTME/BTC', 
-                'base': 'MINTME', 
-                'quote': 'BTC',
-                'baseId': 'mintme',
-                'quoteId': 'btc',
-                'type': 'spot',
-                'precision': {
-                    'amount': 8,
-                    'price': 8
-                },
-                'limits': {
-                    'amount': {
-                        'min': 0.0001,
-                        'max': undefined
-                    },
-                    'price': {
-                        'min': 0.00000001,
-                        'max': undefined
-                    },
-                    'cost': {
-                        'min': 0.0001,
-                        'max': undefined
-                    }
-                },
-                'info': {},
-                ...defaultMarketProps
-            },
-            'MINTME/ETH': { 
-                'id': 'mintme-eth', 
-                'symbol': 'MINTME/ETH', 
-                'base': 'MINTME', 
-                'quote': 'ETH',
-                'baseId': 'mintme',
-                'quoteId': 'eth',
-                'type': 'spot',
-                'precision': {
-                    'amount': 8,
-                    'price': 8
-                },
-                'limits': {
-                    'amount': {
-                        'min': 0.0001,
-                        'max': undefined
-                    },
-                    'price': {
-                        'min': 0.00000001,
-                        'max': undefined
-                    },
-                    'cost': {
-                        'min': 0.0001,
-                        'max': undefined
-                    }
-                },
-                'info': {},
-                ...defaultMarketProps
-            },
-            'BTC/USD': { 
-                'id': 'btc-usd', 
-                'symbol': 'BTC/USD', 
-                'base': 'BTC', 
-                'quote': 'USD',
-                'baseId': 'btc',
-                'quoteId': 'usd',
-                'type': 'spot',
-                'precision': {
-                    'amount': 8,
-                    'price': 2
-                },
-                'limits': {
-                    'amount': {
-                        'min': 0.0001,
-                        'max': undefined
-                    },
-                    'price': {
-                        'min': 0.01,
-                        'max': undefined
-                    },
-                    'cost': {
-                        'min': 0.01,
-                        'max': undefined
-                    }
-                },
-                'info': {},
-                ...defaultMarketProps
-            },
-            'ETH/USD': { 
-                'id': 'eth-usd', 
-                'symbol': 'ETH/USD', 
-                'base': 'ETH', 
-                'quote': 'USD',
-                'baseId': 'eth',
-                'quoteId': 'usd',
-                'type': 'spot',
-                'precision': {
-                    'amount': 8,
-                    'price': 2
-                },
-                'limits': {
-                    'amount': {
-                        'min': 0.0001,
-                        'max': undefined
-                    },
-                    'price': {
-                        'min': 0.01,
-                        'max': undefined
-                    },
-                    'cost': {
-                        'min': 0.01,
-                        'max': undefined
-                    }
-                },
-                'info': {},
-                ...defaultMarketProps
-            },
-        };
-        
-        this.markets = markets;
-        return this.markets;
     }
     
     // Method to fetch assets from the API
@@ -295,6 +78,37 @@ class MintMeExchange extends ccxt.Exchange {
             }
         }
     }
+
+    // Direct method for creating orders with MintMe's specific payload format
+    async createMintMeOrder(mintMeOrder: MintMeOrder): Promise<any> {
+        try {
+            const response = await axios.post(
+                `${this.urls.api.private}/auth/user/orders`, 
+                mintMeOrder,
+                {
+                    headers: {
+                        'X-API-ID': process.env.PUB_API_KEY,
+                        'X-API-KEY': process.env.PRIV_API_KEY
+                    }
+                }
+            );
+
+            // Return the response data regardless of status
+            // This allows capturing result codes and messages
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError && error.response) {
+                // If the API returned a response with an error, return the response data
+                // This captures cases like "Insufficient Balance" which return error codes
+                if (error.response.data) {
+                    return error.response.data;
+                }
+                throw new Error(`MintMe API error: ${error.response.status} ${error.response.statusText}`);
+            } else {
+                throw error;
+            }
+        }
+    }
 }
 
 // Add MintMe to the CCXT exchanges
@@ -306,9 +120,6 @@ export async function fetchMintMeAssets() {
         const mintme = new (ccxt as any).mintme({ enableRateLimit: true });
         console.log('MintMe Exchange initialized');
         
-        // Load markets
-        await mintme.loadMarkets();
-        
         // Fetch assets
         const assets = await mintme.fetchAssets();
         console.log('MintMe Assets:', assets);
@@ -317,6 +128,34 @@ export async function fetchMintMeAssets() {
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.error('Error fetching MintMe assets:', error.message);
+        } else {
+            console.error('Unknown error occurred');
+        }
+        throw error;
+    }
+}
+
+export async function createMintMeOrder(order: MintMeOrder) {
+    try {
+        const mintme = new (ccxt as any).mintme({ enableRateLimit: true });
+        console.log('MintMe Exchange initialized');
+
+        // Log the order details being sent to the API
+        console.log('Sending order to MintMe API:', {
+            base: order.base,
+            quote: order.quote,
+            action: order.action,
+            price: order.marketPrice ? 'MARKET' : order.priceInput,
+            amount: order.amountInput,
+            donation: order.donationAmount,
+            marketPrice: order.marketPrice
+        });
+
+        const result = await mintme.createMintMeOrder(order);
+        return result;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error('Error creating MintMe order:', error.message);
         } else {
             console.error('Unknown error occurred');
         }

@@ -1,5 +1,5 @@
 import * as ccxt from 'ccxt';
-import { fetchMintMeAssets } from './mintme-extension'; // Import the assets function
+import { fetchMintMeAssets } from '../mintme-extension'; // Import the assets function
 
 /**
  * Example of using MintMe with CCXT
