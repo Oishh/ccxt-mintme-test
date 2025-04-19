@@ -34,6 +34,8 @@ Create a `.env` file in the root directory with your MintMe API credentials:
 ```
 PUB_API_KEY=your_public_api_key
 PRIV_API_KEY=your_private_api_key
+CLIENT_ID=your_client_id
+CLIENT_SECRET=your_client_secret
 ```
 
 ## Project Structure
