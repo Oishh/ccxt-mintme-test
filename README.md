@@ -9,7 +9,6 @@ A TypeScript project that integrates the MintMe exchange with the CCXT library. 
 - Create buy and sell orders on MintMe exchange
 - Fetch active user orders with pagination support
 - Fetch finished (historical) user orders with pagination support
-- Display market data in a formatted table
 - TypeScript support for type safety
 
 ## Prerequisites
@@ -40,8 +39,8 @@ PRIV_API_KEY=your_private_api_key
 ## Project Structure
 
 - `src/mintme-extension.ts` - Contains the MintMe exchange implementation extending CCXT
-- `src/testMintMe.ts` - Example script demonstrating how to use the MintMe integration to fetch assets
-- `src/testMintMeOrder.ts` - Example script for creating orders on MintMe exchange
+- `src/get_assets.ts` - Example script demonstrating how to use the MintMe integration to fetch assets
+- `src/place_order.ts` - Example script for creating orders on MintMe exchange
 - `src/tests/fetch_active_orders.ts` - Example script for fetching active user orders
 - `src/tests/fetch_finished_orders.ts` - Example script for fetching completed/historical user orders
 
@@ -61,13 +60,13 @@ Create orders on MintMe using command line arguments:
 
 ```bash
 # Basic limit order
-ts-node src/testMintMeOrder.ts --base=LAGX --quote=MINTME --price=5 --amount=12.33 --action=buy
+ts-node src/place_order.ts --base=LAGX --quote=MINTME --price=5 --amount=12.33 --action=buy
 
 # Market order
-ts-node src/testMintMeOrder.ts --base=LAGX --quote=MINTME --amount=12.33 --action=buy --market
+ts-node src/place_order.ts --base=LAGX --quote=MINTME --amount=12.33 --action=buy --market
 
 # Sell order
-ts-node src/testMintMeOrder.ts --base=LAGX --quote=MINTME --price=5 --amount=12.33 --action=sell
+ts-node src/place_order.ts --base=LAGX --quote=MINTME --price=5 --amount=12.33 --action=sell
 ```
 
 #### Available Order Parameters
