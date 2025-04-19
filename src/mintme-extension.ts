@@ -109,6 +109,58 @@ class MintMeExchange extends ccxt.Exchange {
             }
         }
     }
+
+    // Fetch active user orders
+    async fetchActiveUserOrders(offset: number = 0, limit: number = 100): Promise<any> {
+        try {
+            const response = await axios.get(
+                `${this.urls.api.private}/auth/user/orders/active?offset=${offset}&limit=${limit}`,
+                {
+                    headers: {
+                        'X-API-ID': process.env.PUB_API_KEY,
+                        'X-API-KEY': process.env.PRIV_API_KEY
+                    }
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError && error.response) {
+                if (error.response.data) {
+                    return error.response.data;
+                }
+                throw new Error(`MintMe API error: ${error.response.status} ${error.response.statusText}`);
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    // Fetch finished user orders
+    async fetchFinishedUserOrders(offset: number = 0, limit: number = 100): Promise<any> {
+        try {
+            const response = await axios.get(
+                `${this.urls.api.private}/auth/user/orders/finished?offset=${offset}&limit=${limit}`,
+                {
+                    headers: {
+                        'X-API-ID': process.env.PUB_API_KEY,
+                        'X-API-KEY': process.env.PRIV_API_KEY
+                    }
+                }
+            );
+
+            return response.data;
+        } catch (error) {
+            if (error instanceof AxiosError && error.response) {
+                if (error.response.data) {
+                    return error.response.data;
+                }
+                throw new Error(`MintMe API error: ${error.response.status} ${error.response.statusText}`);
+            } else {
+                throw error;
+            }
+        }
+    }
 }
 
 // Add MintMe to the CCXT exchanges
@@ -156,6 +208,44 @@ export async function createMintMeOrder(order: MintMeOrder) {
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.error('Error creating MintMe order:', error.message);
+        } else {
+            console.error('Unknown error occurred');
+        }
+        throw error;
+    }
+}
+
+export async function fetchActiveUserOrders(offset: number = 0, limit: number = 100) {
+    try {
+        const mintme = new (ccxt as any).mintme({ enableRateLimit: true });
+        console.log('MintMe Exchange initialized');
+        
+        console.log(`Fetching active user orders with offset=${offset}, limit=${limit}`);
+        
+        const result = await mintme.fetchActiveUserOrders(offset, limit);
+        return result;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error('Error fetching MintMe active orders:', error.message);
+        } else {
+            console.error('Unknown error occurred');
+        }
+        throw error;
+    }
+}
+
+export async function fetchFinishedUserOrders(offset: number = 0, limit: number = 100) {
+    try {
+        const mintme = new (ccxt as any).mintme({ enableRateLimit: true });
+        console.log('MintMe Exchange initialized');
+        
+        console.log(`Fetching finished user orders with offset=${offset}, limit=${limit}`);
+        
+        const result = await mintme.fetchFinishedUserOrders(offset, limit);
+        return result;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error('Error fetching MintMe finished orders:', error.message);
         } else {
             console.error('Unknown error occurred');
         }

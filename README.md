@@ -7,6 +7,8 @@ A TypeScript project that integrates the MintMe exchange with the CCXT library. 
 - Custom CCXT exchange implementation for MintMe
 - Fetch asset information from MintMe exchange
 - Create buy and sell orders on MintMe exchange
+- Fetch active user orders with pagination support
+- Fetch finished (historical) user orders with pagination support
 - Display market data in a formatted table
 - TypeScript support for type safety
 
@@ -40,6 +42,8 @@ PRIV_API_KEY=your_private_api_key
 - `src/mintme-extension.ts` - Contains the MintMe exchange implementation extending CCXT
 - `src/testMintMe.ts` - Example script demonstrating how to use the MintMe integration to fetch assets
 - `src/testMintMeOrder.ts` - Example script for creating orders on MintMe exchange
+- `src/tests/fetch_active_orders.ts` - Example script for fetching active user orders
+- `src/tests/fetch_finished_orders.ts` - Example script for fetching completed/historical user orders
 
 ## Usage
 
@@ -79,15 +83,43 @@ ts-node src/testMintMeOrder.ts --base=LAGX --quote=MINTME --price=5 --amount=12.
 | `--market` | Flag to use market price | `--market` |
 | `--help` | Show help message | `--help` |
 
-## Available Markets
+### Fetch Active User Orders
 
-The integration currently supports the following markets:
-- BTC/WETH
-- ETH/WETH
-- MINTME/BTC
-- MINTME/ETH
-- BTC/USD
-- ETH/USD
+Retrieve your active orders with pagination support:
+
+```bash
+# Default pagination (offset=0, limit=100)
+ts-node src/tests/fetch_active_orders.ts
+
+# Custom pagination
+ts-node src/tests/fetch_active_orders.ts --offset=10 --limit=20
+
+# Show help
+ts-node src/tests/fetch_active_orders.ts --help
+```
+
+### Fetch Finished User Orders
+
+Retrieve your completed/historical orders with pagination support:
+
+```bash
+# Default pagination (offset=0, limit=100)
+ts-node src/tests/fetch_finished_orders.ts
+
+# Custom pagination
+ts-node src/tests/fetch_finished_orders.ts --offset=10 --limit=20
+
+# Show help
+ts-node src/tests/fetch_finished_orders.ts --help
+```
+
+#### Available Fetch Parameters
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `--offset` | Starting position for pagination (default: 0) | `--offset=10` |
+| `--limit` | Maximum number of orders to return (default: 100) | `--limit=20` |
+| `--help` | Show help message | `--help` |
 
 ## API Details
 
